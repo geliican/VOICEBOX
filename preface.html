@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phone Number Recorder</title>
+    <style>
+        h2 { text-align: center; }
+        body { background-color: #361612; color: white; font-family: courier; text-align: center; }
+        input, button { margin: 10px; padding: 10px; }
+        button { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <center>
+        <img src="https://assets.onecompiler.app/43bz5hq7r/43bz5gydc/name.jpg" style="width:500px;height:300px;">
+        <h2>Enter a Phone Number</h2>
+        <input type="number" id="numberInput">
+        <br>
+        <button onclick="submitNumber()">Submit</button>
+        <button onclick="searchNumber()">Search</button>
+        <button onclick="viewAllNumbers()">View All</button>
+        <p id="searchResult"></p>
+
+        <h2>📜 Recorded Numbers</h2>
+        <ul id="numberList"></ul>
+
+        <img src="https://assets.onecompiler.app/43bz5hq7r/43bz5gydc/483299177_982936723810466_6732293691341618060_n.jpg" style="width:400px;height:300px;">
+    </center>
+
+    <script>
+        function getStoredNumbers() {
+            return JSON.parse(localStorage.getItem("phoneNumbers")) || [];
+        }
+
+        function saveNumbers(numbers) {
+            localStorage.setItem("phoneNumbers", JSON.stringify(numbers));
+        }
+
+        function submitNumber() {
+            const numberInput = document.getElementById("numberInput").value;
+            if (numberInput === "") return alert("Please enter a number.");
+
+            let numbers = getStoredNumbers();
+            
+            if (numbers.includes(numberInput)) {
+                alert("⚠️ This number is already recorded!");
+                return;
+            }
+
+            numbers.push(numberInput);
+            saveNumbers(numbers);
+
+            alert("✅ Number saved successfully!");
+            viewAllNumbers();
+        }
+
+        function searchNumber() {
+            const numberInput = document.getElementById("numberInput").value;
+            if (numberInput === "") return alert("Please enter a number to search.");
+
+            let numbers = getStoredNumbers();
+            const found = numbers.includes(numberInput);
+
+            document.getElementById("searchResult").innerText = found ? 
+                `✅ Number ${numberInput} exists in the database.` : 
+                `❌ Number ${numberInput} not found.`;
+        }
+
+        function viewAllNumbers() {
+            let numbers = getStoredNumbers();
+            document.getElementById("numberList").innerHTML = numbers.length > 0 ? 
+                numbers.map(num => `<li>${num}</li>`).join("") : 
+                "<li>No numbers recorded yet.</li>";
+        }
+
+        // Load numbers on page load
+        viewAllNumbers();
+    </script>
